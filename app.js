@@ -11,6 +11,8 @@ import path from "path"; // Import path module
 //
 import { userRoutes } from "./src/routes/userRoutes.js";
 import { productRoutes } from "./src/routes/productRoutes.js";
+import { cartRoutes } from "./src/routes/cartRoutes.js";
+
 // Load environment variables from a .env file
 dotenv.config();
 
@@ -54,7 +56,7 @@ app.get("/", (req, res) => {
 // Use user routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
-
+app.use("/api/cart", cartRoutes);
 //
 const PORT = process.env.PORT || 3008;
 
