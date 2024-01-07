@@ -1,29 +1,7 @@
-// import jwt from "jsonwebtoken";
-
-// // Middleware to verify JWT token and authenticate users
-// const authenticateToken = (req, res, next) => {
-//   const token = req.header("Authorization");
-//   console.log(token);
-//   if (!token) {
-//     return res.status(401).json({ message: "Unauthorized: No token provided" });
-//   }
-
-//   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-//     if (err) {
-//       return res.status(403).json({ message: "Forbidden: Invalid token" });
-//     }
-
-//     req.user = user;
-//     next();
-//   });
-// };
-
-// export { authenticateToken };
-//
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-// Middleware to verify JWT token and authenticate users
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
   const tokenHeader = req.header("Authorization");
 
   console.log("tokenHeader", tokenHeader);
@@ -34,20 +12,30 @@ const authenticateToken = (req, res, next) => {
 
   // Extract the token from the header (remove "Bearer " if present)
   const token = tokenHeader.replace("Bearer ", "");
-  //
-  // console.log("token", token);
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      //
-      console.error("Error verifying token:", err);
-      //
-      return res.status(403).json({ message: "Forbidden: Invalid token" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //
+
+    // console.log("decoded", decoded);
+
+    req.user = decoded;
+
+    // Check if the user exists in the collection
+    const user = await User.findById(decoded.userId);
+    //
+    // console.log("user", user);
+
+    if (!user) {
+      console.error("User not found");
+      return res.status(403).json({ message: "Forbidden: Invalid user" });
     }
 
-    req.user = user;
     next();
-  });
+  } catch (err) {
+    console.error("Error verifying token:", err);
+    return res.status(403).json({ message: "Forbidden: Invalid token" });
+  }
 };
 
 export { authenticateToken };

@@ -2,7 +2,9 @@
 import Product from "../models/Product.js";
 import multer from "multer";
 import path from "path";
-
+import { uploadFileToS3 } from "../helper/s3.js";
+//
+// require("aws-sdk/lib/maintenance_mode_message").suppress = true;
 //
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -48,20 +50,21 @@ const ProductController = {
 
       console.log(req.body, "req.body");
 
-      // Check if an image file was uploaded
       if (!req.file) {
         return res.status(400).json({ message: "Please upload an image." });
       }
 
-      // Create a new product
+      const s3Response = await uploadFileToS3(req.file);
+
+      console.log("s3Response", s3Response);
+
       const newProduct = new Product({
         name,
         description,
         price,
-        imagePath: req.file.path, // Save the local path to the image
+        imagePath: s3Response.Location,
       });
 
-      // Save the product to the database
       await newProduct.save();
 
       res.status(201).json({ message: "Product created successfully." });

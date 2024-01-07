@@ -1,4 +1,7 @@
 // Import dependencies using ESM syntax
+//
+process.env.AWS_SUPPRESS_WARN = "1";
+//
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
