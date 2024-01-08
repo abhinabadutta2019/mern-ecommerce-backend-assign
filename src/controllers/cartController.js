@@ -63,12 +63,25 @@ const CartController = {
         await cart.save();
       }
 
-      res.status(200).json(cart);
+      // Calculate total value
+      const totalValue = cart.products.reduce((total, item) => {
+        const product = item.productId;
+        return total + product.price * item.quantity;
+      }, 0);
+
+      // Include total value in the response
+      const response = {
+        cart,
+        totalValue,
+      };
+
+      res.status(200).json(response);
     } catch (error) {
       console.error("Error getting cart:", error);
       res.status(500).json({ message: "Internal server error." });
     }
   },
+
   removeFromCart: async (req, res) => {
     try {
       const { productId } = req.body;

@@ -29,8 +29,13 @@ const UserController = {
       // Save the user to the database
       await newUser.save();
 
-      // Return a success message
-      res.status(201).json({ message: "User registered successfully." });
+      // Generate a JWT token for the registered user
+      const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "10h",
+      });
+
+      // Return the token along with a success message
+      res.status(201).json({ message: "User registered successfully.", token });
     } catch (error) {
       console.error("Error registering user:", error);
       res.status(500).json({ message: "Internal server error." });
@@ -55,7 +60,7 @@ const UserController = {
       // If passwords match, generate and return a JWT token
       if (passwordMatch) {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-          expiresIn: "1h",
+          expiresIn: "10h",
         });
         return res.status(200).json({ token });
       } else {
