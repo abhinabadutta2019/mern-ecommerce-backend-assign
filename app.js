@@ -18,9 +18,18 @@ dotenv.config();
 
 // Create an Express application
 const app = express();
+//
+const corsOptions = {
+  origin: [
+    "https://mern-ecommerce-react-frontend-assign.onrender.com",
+    "http://localhost:3054",
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // If your API supports cookies or authentication headers
+};
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 //
 // Use import.meta.url to get the current module's URL
