@@ -1,5 +1,8 @@
 # QuikKart E-Commerce Application
 
+## Deployed link
+https://mern-ecommerce-react-frontend-assign.onrender.com
+
 ## Introduction
 
 The E-Commerce Application is a web-based platform designed for online shopping. It provides users with the ability to browse products, add them to a shopping cart, and complete the purchase securely. The application is built using the MERN (MongoDB, Express.js, React, Node.js) stack.
